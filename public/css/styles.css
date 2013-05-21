@@ -1,0 +1,13 @@
+#container{ /* wyśrodkowanie wszystkiego */
+    margin: 0 auto;
+    width: 960px;
+}
+
+#container h1{ /* tytuł */
+    color: red;
+    text-shadow: 2px 2px 0 #493854;
+}
+
+#glowny{ /* położenie od lewej */
+    float: left;
+}
