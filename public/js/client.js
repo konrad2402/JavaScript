@@ -12,6 +12,12 @@ function connect ()
 	// wyswietla w przegladarce uzytkownika
         console.log('Waz Id response : ' + data.wazId);
     });
+    
+    server.on('Waz.disconnect', function (client)
+    {
+        console.log(client);
+        drawDisconnectEvents(client);
+    });
 }
 // konstruktor
 function glowny()
