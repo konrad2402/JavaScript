@@ -1,5 +1,6 @@
 var express = require("express"),
     http = require('http'),
+    events = require("events"),
     io = require('socket.io'),
     app = express();
 
@@ -12,32 +13,55 @@ Server.prototype.init = function(port)
 {
 //Tworzenie serwera
     this.server = http.createServer(app);
-//Ustaw úcieøkÍ do folderu aplikacji "klienta"
+//Ustaw ≈õcie≈ºkƒô do folderu aplikacji "klienta"
     app.use(express.static(__dirname + '/../public'));
-	//Nas≥uchiwanie portu
+	//Nas≈Çuchiwanie portu
     this.server.listen(port);
 	// Inicjalizacja gniazda
     this.startSockets();
     this.em = new events.EventEmitter();
-    console.log('Listening port : ' + port);
+    console.log('Nasluchuje na : ' + port);
 };
 Server.prototype.startSockets = function()
 {
-//nas≥uchuje na serwerze
+//nas≈Çuchuje na serwerze
     this.socket = io.listen(this.server);
-//Akcja po≥øczenia uøytkownika
+    this.socket.configure( function()
+    {
+        this.socket.set('log level', 1);
+    }.bind(this));
+	// dod≈ÇƒÖczenie u≈ºytkownika
     this.socket.of('/waz').on('connection', function(client)
     {
         client.wazId = this.clientId;
         this.clientId++;
-		//odpowiedü di klienta
+		// odpowied≈∫ do gracza 
         client.emit('response', {wazId: client.wazId});
-		//jeúli siÍ roz≥πczy
-        client.on('disconnect', function(){
-            this.socket.of('/waz').emit('Waz.disconnect',client.wazId);
+		// odpowied≈∫ do reszty u≈ºytkownik√≥w
+        this.socket.of('/waz').emit('Waz.newWaz',client.wazId);
+        this.em.emit('Server.newWaz', client.wazId);
+		// naci≈õniecie strza≈Çki na klawat...
+		client.on('Waz.requestDirection', function (data) // reqest... w client.js
+        { 
+		//odzyskuje ustawienie u≈ºytkownika i wpisany kierunek 
+           this.em.emit('Waz.changeDirection', // app.js
+            {
+                id: client.wazId,
+                direction: data.direction
+            });
         }.bind(this));
+		//je≈õli siƒô roz≈ÇƒÖczy
+        client.on('disconnect', function(){
+
+            this.socket.of('/waz').emit('Waz.disconnect',client.wazId);
+		}.bind(this));
 
     }.bind(this));
 
 
+};
+// wysy≈Ça aktualizacje wƒô≈ºa 
+Server.prototype.update = function(weze)
+{
+    this.socket.of('/waz').emit('update', weze);
 };
