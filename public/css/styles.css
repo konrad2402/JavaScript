@@ -1,13 +1,41 @@
-#container{ /* wy≈õrodkowanie wszystkiego */
+#container{ /* wyúrodkowanie wszystkiego */
     margin: 0 auto;
-    width: 960px;
+    width: 1100px;
 }
-
-#container h1{ /* tytu≈Ç */
+#container h1{ /* tytu≥ */
     color: red;
     text-shadow: 2px 2px 0 #493854;
 }
 
-#glowny{ /* po≈Ço≈ºenie od lewej */
+#glowny{ /* po≥oøenie od lewej */
     float: left;
+}
+ul li{
+    list-style: none;
+}
+
+#roport{
+    background-color: white;
+    height: 100px;
+    overflow: auto;
+    width: 350px;
+}
+
+#wyniki{
+    background-color: white;
+    float: right;
+    width: 398px;
+    margin-top: 5px;
+    height: 350px;
+    overflow: auto;
+}
+
+.nombre {
+    font-size: 26px;
+}
+.gracz{
+    color: green;
+}
+.innyGracz{
+    color: red;
 }

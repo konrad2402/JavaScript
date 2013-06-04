@@ -38,13 +38,13 @@ Server.prototype.startSockets = function()
 		// odpowiedź do gracza 
         client.emit('response', {wazId: client.wazId});
 		// odpowiedź do reszty użytkowników
-        this.socket.of('/waz').emit('Waz.newWaz',client.wazId);
+		this.socket.of('/waz').emit('Waz.newWaz',client.wazId);
         this.em.emit('Server.newWaz', client.wazId);
 		// naciśniecie strzałki na klawat...
-		client.on('Waz.requestDirection', function (data) // reqest... w client.js
-        { 
-		//odzyskuje ustawienie użytkownika i wpisany kierunek 
-           this.em.emit('Waz.changeDirection', // app.js
+        client.on('Waz.requestDirection', function (data)
+        {
+        //odzyskuje ustawienie użytkownika i wpisany kierunek 
+            this.em.emit('Waz.changeDirection',
             {
                 id: client.wazId,
                 direction: data.direction
@@ -52,16 +52,17 @@ Server.prototype.startSockets = function()
         }.bind(this));
 		//jeśli się rozłączy
         client.on('disconnect', function(){
-
             this.socket.of('/waz').emit('Waz.disconnect',client.wazId);
-		}.bind(this));
+
+            this.em.emit('Waz.disconnect', client.wazId);
+        }.bind(this));
 
     }.bind(this));
 
 
 };
-// wysyła aktualizacje węża 
-Server.prototype.update = function(weze)
+// wysyła aktualizacje węża
+Server.prototype.update = function(weze, bonus)
 {
-    this.socket.of('/waz').emit('update', weze);
+    this.socket.of('/waz').emit('update', weze, bonus);
 };

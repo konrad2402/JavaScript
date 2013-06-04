@@ -8,7 +8,11 @@ exports.Waz = Waz =function()
 Waz.prototype.init = function (playerId)
 {
     this.currentlength = this.WAZ_LENGTH;
+    this.deaths = 0;
     this.playerId = playerId;
+    this.goodies = 0;
+    this.kills = 0;
+    this.score = 0;
 	//zawiera ciało weża
     this.elements = [];
 	//domyślny kierunek węża
@@ -91,4 +95,57 @@ Waz.prototype.setDirection = function(direction)
         this.direction = direction;
     }
 
+};
+// restart węża
+Waz.prototype.reset = function ()
+{
+    this.currentlength = this.WAZ_LENGTH;
+    this.elements = [];
+  var rand = Math.floor(Math.random() * this.STAGE_HEIGHT);
+    for (var i=this.currentlength; i>0; i--){
+        this.elements.push({x: -i, y: rand});
+    }
+};
+
+Waz.prototype.hasColision = function (item)
+{
+    var head = this.elements[this.elements.length - 1];
+    if (head.x == item.x && head.y == item.y)
+    {
+        return true;
+    }
+    return false;
+};
+// dodaje pole do węża
+Waz.prototype.addLength = function ()
+{
+    var wazQueue = this.elements[0];
+    this.currentlength = this.currentlength + 30;
+    this.elements.unshift ({x: wazQueue.x, y: wazQueue.y});
+};
+// zwiększa wynik po zjedzeniu bonusa
+Waz.prototype.eatBonus = function (bonus)
+{
+// sprawdza czy bonus jest specjalny 
+    if(bonus.special === true)
+    {
+        this.score = this.score + 30;
+    }
+    else
+    {
+        this.score = this.score + 10;
+    }
+    this.goodies++;
+};
+// zwiększa wynik za zabicie węża
+Waz.prototype.kill = function ()
+{
+    this.score = this.score + 50;
+};
+// zwiększa zginięcia węża i zmniejsza jego wynik
+Waz.prototype.die = function ()
+{
+    this.deaths++;
+    this.score = this.score - 50;
+    this.reset();
 };
